@@ -1,4 +1,4 @@
-package plugin;
+package com.github.abigail830.plugin;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.maven.plugin.AbstractMojo;

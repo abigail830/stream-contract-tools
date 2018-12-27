@@ -1,4 +1,4 @@
-package plugin;
+package com.github.abigail830.plugin;
 
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -24,7 +24,13 @@ public class StreamConvertMojo extends AbstractMojo {
      * The REST URL point to remote server for collect content of contracts
      */
     @Parameter
-    private String remoteUrl;
+    private String restEndPoint;
+
+    /**
+     * HTTP Method using for remote REST endpoint with restEndPoint
+     */
+    @Parameter( property = "restMethod", defaultValue="GET" )
+    private String restMethod;
 
     /**
      * To filter list of contracts belongs to all specified providers
@@ -65,7 +71,7 @@ public class StreamConvertMojo extends AbstractMojo {
 
 
         new StreamContractDownloader(targetContractDirectory, this.project.getGroupId(),
-                remoteUrl,
+                restEndPoint,
                 providers, consumers, urls)
                 .download();
 

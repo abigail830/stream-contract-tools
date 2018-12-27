@@ -7,6 +7,6 @@
 *.class
 
 target/*
-common-io/target/*
-stream-contract-maven-plugin/target/*
+common-info/target/*
+stream-contract-maven-com.github.abigail830.plugin/target/*
 

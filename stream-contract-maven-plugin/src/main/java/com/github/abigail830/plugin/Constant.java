@@ -1,4 +1,4 @@
-package plugin;
+package com.github.abigail830.plugin;
 
 public class Constant {
 

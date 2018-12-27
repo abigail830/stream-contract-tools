@@ -1,4 +1,4 @@
-package plugin;
+package com.github.abigail830.plugin;
 
 
 import com.github.abigail830.Contract;
@@ -20,16 +20,16 @@ public class StreamContractDownloader {
     private static final Logger log = LoggerFactory.getLogger(StreamContractDownloader.class);
 
     private File targetContractDirectory;
-    private String remoteUrl;
+    private String restEndPoint;
     private String[] providers;
     private String[] consumers;
     private String[] urls;
     private String groupId;
 
     public StreamContractDownloader(File targetContractDirectory, String groupId,
-                                    String remoteUrl, String[] providers, String[] consumers, String[] urls) {
+                                    String restEndPoint, String[] providers, String[] consumers, String[] urls) {
         this.targetContractDirectory = targetContractDirectory;
-        this.remoteUrl = remoteUrl;
+        this.restEndPoint = restEndPoint;
         this.providers = providers;
         this.consumers = consumers;
         this.urls = urls;
@@ -38,7 +38,7 @@ public class StreamContractDownloader {
 
     public void download() throws MojoFailureException {
         if(!shouldDownloadContracts()){
-            log.warn("Either targetContractDirectory or remoteUrl are missing " +
+            log.warn("Either targetContractDirectory or restEndPoint are missing " +
                     "while they should be mandatory for trigger streamConvert goal.");
             return;
         }
@@ -53,7 +53,7 @@ public class StreamContractDownloader {
     }
 
     private String downloadContractToFile() {
-        log.info("- Remote URL: {}", this.remoteUrl);
+        log.info("- Remote URL: {}", this.restEndPoint);
 
         Contract contract = new Contract();
         contract.setName("should_get_actuator_health.yml");
@@ -123,7 +123,7 @@ public class StreamContractDownloader {
     }
 
     private boolean shouldDownloadContracts(){
-        return this.targetContractDirectory != null && this.remoteUrl != null;
+        return this.targetContractDirectory != null && this.restEndPoint != null;
     }
 
 
