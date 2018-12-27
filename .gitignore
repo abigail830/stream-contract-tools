@@ -1,0 +1,12 @@
+.idea/*
+.idea
+
+/contracts
+
+*.iml
+*.class
+
+target/*
+common-io/target/*
+stream-contract-maven-plugin/target/*
+
