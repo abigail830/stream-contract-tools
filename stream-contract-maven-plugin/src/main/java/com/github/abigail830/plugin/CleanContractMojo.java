@@ -15,10 +15,11 @@ import java.io.IOException;
 public class CleanContractMojo extends AbstractMojo {
 
 
+    static final String DEFAULT_CONTRACT_DIR = "${project.basedir}/contracts";
     /**
      * Directory where the generated spring contracts should be placed.
      */
-    @Parameter(defaultValue = Constant.DEFAULT_CONTRACT_DIR)
+    @Parameter(defaultValue = DEFAULT_CONTRACT_DIR)
     private File targetContractDirectory;
 
     /**

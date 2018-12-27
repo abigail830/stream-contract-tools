@@ -4,8 +4,7 @@ public class Contract {
 
     String name;
     String content;
-    String provider;
-    String consumer;
+    String contractType;
 
     public String getName() {
         return name;
@@ -23,30 +22,21 @@ public class Contract {
         this.content = content;
     }
 
-    public String getProvider() {
-        return provider;
+
+    public String getContractType() {
+        return contractType;
     }
 
-    public void setProvider(String provider) {
-        this.provider = provider;
+    public void setContractType(String contractType) {
+        this.contractType = contractType;
     }
-
-    public String getConsumer() {
-        return consumer;
-    }
-
-    public void setConsumer(String consumer) {
-        this.consumer = consumer;
-    }
-
 
     @Override
     public String toString() {
-        return "com.github.abigail830.Contract{" +
+        return "Contract{" +
                 "name='" + name + '\'' +
                 ", content='" + content + '\'' +
-                ", provider='" + provider + '\'' +
-                ", consumer='" + consumer + '\'' +
+                ", contractType='" + contractType + '\'' +
                 '}';
     }
 }

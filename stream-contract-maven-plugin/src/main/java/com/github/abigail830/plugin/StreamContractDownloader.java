@@ -2,104 +2,97 @@ package com.github.abigail830.plugin;
 
 
 import com.github.abigail830.Contract;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import org.apache.commons.io.FileUtils;
+import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import javax.ws.rs.client.*;
+import javax.ws.rs.core.GenericType;
+import javax.ws.rs.core.Response;
 
 public class StreamContractDownloader {
 
     private static final Logger log = LoggerFactory.getLogger(StreamContractDownloader.class);
 
     private File targetContractDirectory;
-    private String restEndPoint;
-    private String[] providers;
-    private String[] consumers;
-    private String[] urls;
-    private String groupId;
+    private RestEndPoint[] restEndPoints;
 
-    public StreamContractDownloader(File targetContractDirectory, String groupId,
-                                    String restEndPoint, String[] providers, String[] consumers, String[] urls) {
+    public StreamContractDownloader(File targetContractDirectory, RestEndPoint[] restEndPoints) {
         this.targetContractDirectory = targetContractDirectory;
-        this.restEndPoint = restEndPoint;
-        this.providers = providers;
-        this.consumers = consumers;
-        this.urls = urls;
-        this.groupId = groupId;
+        this.restEndPoints = restEndPoints;
     }
 
-    public void download() throws MojoFailureException {
+    public void download() throws MojoFailureException, MojoExecutionException {
         if(!shouldDownloadContracts()){
-            log.warn("Either targetContractDirectory or restEndPoint are missing " +
+            log.warn("Either targetContractDirectory or restEndPoints are missing " +
                     "while they should be mandatory for trigger streamConvert goal.");
             return;
         }
 
-        log.info("Going to start download contract");
-
-        writeJsonToContractFiles(prepareTargetRootDirectory(
-                this.targetContractDirectory),
-                downloadContractToFile()
-        );
+        log.info("Going to start download contract to file...");
+        downloadContractToFile(this.targetContractDirectory);
 
     }
 
-    private String downloadContractToFile() {
-        log.info("- Remote URL: {}", this.restEndPoint);
+    private void downloadContractToFile(File targetRootDirectory) throws MojoExecutionException, MojoFailureException {
 
-        Contract contract = new Contract();
-        contract.setName("should_get_actuator_health.yml");
-        contract.setProvider("ContractProvider");
-        contract.setConsumer("ContractConsumer1");
-        contract.setContent("request:\n" +
-                "  method: GET\n" +
-                "  url: /info/health\n" +
-                "  headers:\n" +
-                "    Content-Type: application/json\n" +
-                "\n" +
-                "response:\n" +
-                "  status: 200\n" +
-                "  headers:\n" +
-                "    Content-Type: application/json;charset=UTF-8\n" +
-                "  body: |\n" +
-                "    { \"status\": \"up\" }");
+        for(RestEndPoint restEndPoint : restEndPoints){
 
-        Gson gson = new Gson();
-        return gson.toJson(Arrays.asList(contract));
+            if(restEndPoint.getBaseUrl()==null)
+                return;
 
-    }
+            Client client = ClientBuilder.newClient();
+            WebTarget baseTarget = client.target( restEndPoint.getBaseUrl() );
+            log.info("- Remote URL: {}", restEndPoint.getBaseUrl());
 
-    private void writeJsonToContractFiles(File targetdir, String downloadContractsJson) throws MojoFailureException {
-        Gson gson = new Gson();
-        ArrayList<Contract> contractArrayList = gson.fromJson(downloadContractsJson,
-                new TypeToken<List<Contract>>(){}.getType());
-
-        try{
-            for(Contract contract : contractArrayList) {
-
-                File contractFile = createContractFile(
-                        this.targetContractDirectory + "/" +
-                                contract.getProvider() + "/" +
-                                contract.getConsumer() + "/" +
-                                contract.getName());
-                FileUtils.writeStringToFile(contractFile, contract.getContent(), "UTF-8", false);
-
+            // Load up the query parameters if they exist
+            if ( null != restEndPoint.getQueryParamMap() )
+            {
+                for ( String k : restEndPoint.getQueryParamMap().keySet() )
+                {
+                    String param = restEndPoint.getQueryParamMap().get( k );
+                    baseTarget = baseTarget.queryParam( k, param );
+                    log.debug( String.format( "Param [%s:%s]", k, param ) );
+                }
             }
 
+            Invocation.Builder invocationBuilder =  baseTarget.request(restEndPoint.getRequestType());
+
+            if("GET".equals(restEndPoint.getRestMethod())){
+                Response response = invocationBuilder.get();
+                if(response.getStatusInfo().getFamily()== Response.Status.Family.SUCCESSFUL){
+                    List<Contract> result = response.readEntity(new GenericType<List<Contract>>(){});
+                    writeContractListJsonToFiles(result, targetRootDirectory);
+                }else{
+                    log.warn(String.format( "Error code: [%d]", response.getStatus() ));
+                    log.debug( response.getEntity().toString() );
+                    throw new MojoExecutionException( "Http error code: "+response.getStatus());
+                }
+            }else{
+                log.warn("Only HTTP GET is supported at the moment.");
+            }
+        }
+    }
+
+    private void writeContractListJsonToFiles(List<Contract> contractList,
+                                              File targetRootDirectory) throws MojoFailureException {
+        try{
+            for(Contract contract : contractList) {
+                File contractFile = createContractFile(
+                        targetRootDirectory + "/" + contract.getName()+"."+contract.getContractType());
+                FileUtils.writeStringToFile(contractFile, contract.getContent(), "UTF-8", false);
+            }
         } catch (IOException e) {
             log.warn("Fail to write contract to target Directory.");
             throw new MojoFailureException(e.getMessage(), e.getCause());
         }
-
-
     }
 
     private File createContractFile(String fileName) throws IOException {
@@ -108,22 +101,11 @@ public class StreamContractDownloader {
             file.getParentFile().mkdirs();
             file.createNewFile();
         }
-
         return file;
     }
 
-    private File prepareTargetRootDirectory(File targetContractDirectory) {
-        if(!targetContractDirectory.exists()){
-            log.debug("{} not exist, going to create directory.", targetContractDirectory);
-            targetContractDirectory.mkdir();
-        }
-        log.info("- Target Contract Dir: {}", targetContractDirectory);
-
-        return targetContractDirectory;
-    }
-
     private boolean shouldDownloadContracts(){
-        return this.targetContractDirectory != null && this.restEndPoint != null;
+        return this.targetContractDirectory != null && Arrays.asList(this.restEndPoints).size()>0;
     }
 
 
