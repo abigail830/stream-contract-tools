@@ -86,8 +86,8 @@ public class StreamContractDownloader {
         try{
             for(Contract contract : contractList) {
                 File contractFile = createContractFile(
-                        targetRootDirectory + "/" + contract.getName()+"."+contract.getContractType());
-                FileUtils.writeStringToFile(contractFile, contract.getContent(), "UTF-8", false);
+                        targetRootDirectory + "/" + contract.getFileName()+"."+contract.getFileExtension());
+                FileUtils.writeStringToFile(contractFile, contract.getFileContent(), "UTF-8", false);
             }
         } catch (IOException e) {
             log.warn("Fail to write contract to target Directory.");

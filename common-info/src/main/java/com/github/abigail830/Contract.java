@@ -2,41 +2,46 @@ package com.github.abigail830;
 
 public class Contract {
 
-    String name;
-    String content;
-    String contractType;
+    /**
+     * File fileName when generated into file
+     */
+    String fileName;
 
-    public String getName() {
-        return name;
+    String fileContent;
+
+    String fileExtension;
+
+    public String getFileName() {
+        return fileName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
     }
 
-    public String getContent() {
-        return content;
+    public String getFileContent() {
+        return fileContent;
     }
 
-    public void setContent(String content) {
-        this.content = content;
+    public void setFileContent(String fileContent) {
+        this.fileContent = fileContent;
     }
 
 
-    public String getContractType() {
-        return contractType;
+    public String getFileExtension() {
+        return fileExtension;
     }
 
-    public void setContractType(String contractType) {
-        this.contractType = contractType;
+    public void setFileExtension(String fileExtension) {
+        this.fileExtension = fileExtension;
     }
 
     @Override
     public String toString() {
         return "Contract{" +
-                "name='" + name + '\'' +
-                ", content='" + content + '\'' +
-                ", contractType='" + contractType + '\'' +
+                "fileName='" + fileName + '\'' +
+                ", fileContent='" + fileContent + '\'' +
+                ", fileExtension='" + fileExtension + '\'' +
                 '}';
     }
 }
