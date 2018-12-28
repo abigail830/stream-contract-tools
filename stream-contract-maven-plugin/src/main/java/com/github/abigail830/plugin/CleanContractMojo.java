@@ -15,7 +15,7 @@ import java.io.IOException;
 public class CleanContractMojo extends AbstractMojo {
 
 
-    static final String DEFAULT_CONTRACT_DIR = "${project.basedir}/contracts";
+    static final String DEFAULT_CONTRACT_DIR = "${project.basedir}/src/test/resources/contracts/stream-contract/";
     /**
      * Directory where the generated spring contracts should be placed.
      */
