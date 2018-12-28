@@ -1,10 +1,8 @@
 package com.github.abigail830.plugin;
 
-import com.ning.http.client.uri.Uri;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.File;

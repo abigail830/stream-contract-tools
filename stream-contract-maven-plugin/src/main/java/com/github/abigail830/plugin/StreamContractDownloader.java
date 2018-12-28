@@ -17,7 +17,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import javax.ws.rs.client.*;
-import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.Response;
 
 public class StreamContractDownloader {
@@ -44,27 +43,16 @@ public class StreamContractDownloader {
 
     }
 
-    private void downloadContractToFile(File targetRootDirectory) throws MojoExecutionException, MojoFailureException {
+    private void downloadContractToFile(File targetRootDirectory) throws MojoFailureException {
 
         for(RestEndPoint restEndPoint : restEndPoints){
 
-            if(restEndPoint.getBaseUrl()==null)
-                return;
+            if(restEndPoint.getBaseUrl()==null) return;
 
             Client client = ClientBuilder.newClient();
-            WebTarget baseTarget = client.target( restEndPoint.getBaseUrl() );
-            log.info("- Remote URL: {}", restEndPoint.getBaseUrl());
-
-            // Load up the query parameters if they exist
-            if ( null != restEndPoint.getQueryParamMap() )
-            {
-                for ( String k : restEndPoint.getQueryParamMap().keySet() )
-                {
-                    String param = restEndPoint.getQueryParamMap().get( k );
-                    baseTarget = baseTarget.queryParam( k, param );
-                    log.debug( String.format( "Param [%s:%s]", k, param ) );
-                }
-            }
+            WebTarget baseTarget = client.target(restEndPoint.getBaseUrl());
+            baseTarget = getWebTargetWithQueryParam(restEndPoint, baseTarget);
+            log.info("- Remote URL: {}", baseTarget.getUri().getPath());
 
             Invocation.Builder invocationBuilder =  baseTarget.request(restEndPoint.getRequestType());
 
@@ -77,7 +65,6 @@ public class StreamContractDownloader {
                     ArrayList<Contract> contractArrayList = gson.fromJson(result,
                             new TypeToken<List<Contract>>(){}.getType());
 
-//                    List<Contract> result = response.readEntity(new GenericType<List<Contract>>(){});
                     writeContractListJsonToFiles(contractArrayList, targetRootDirectory);
                 }else{
                     log.warn("Fail to access RestEndPoint [{}] with sattus {}, no file would be generated",
@@ -87,6 +74,20 @@ public class StreamContractDownloader {
                 log.warn("Only HTTP GET is supported at the moment.");
             }
         }
+    }
+
+    private WebTarget getWebTargetWithQueryParam(RestEndPoint restEndPoint, WebTarget baseTarget) {
+        // Load up the query parameters if they exist
+        if ( null != restEndPoint.getQueryParamMap() )
+        {
+            for ( String k : restEndPoint.getQueryParamMap().keySet() )
+            {
+                String param = restEndPoint.getQueryParamMap().get( k );
+                baseTarget = baseTarget.queryParam( k, param );
+                log.debug( String.format( "Param [%s:%s]", k, param ) );
+            }
+        }
+        return baseTarget;
     }
 
     private void writeContractListJsonToFiles(List<Contract> contractList,
@@ -102,6 +103,7 @@ public class StreamContractDownloader {
                 File contractFile = createContractFile(
                         targetRootDirectory + "/" + contract.getFileName()+"."+contract.getFileExtension());
                 FileUtils.writeStringToFile(contractFile, contract.getFileContent(), "UTF-8", false);
+                log.info("Target file created: {}", contractFile.getAbsolutePath());
             }
         } catch (IOException e) {
             log.warn("Fail to write contract to target Directory.");
@@ -115,7 +117,7 @@ public class StreamContractDownloader {
             file.getParentFile().mkdirs();
             file.createNewFile();
         }
-        log.info("Target file created: {}", file.getAbsolutePath());
+        log.debug("Empty file created: {}", file.getAbsolutePath());
         return file;
     }
 
