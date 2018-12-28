@@ -5,6 +5,20 @@ Welcome to the stream-contract-maven-plugin for Apache Maven 3.
 
 This plugin provides a means to perform HTTP GET operation on a URL to retrieve response and store the results into files.
 
+**Background**
+
+During implement contract test with spring-cloud-starter-contract-verifier, by default spring verifier plugin support to get contract from resource/contracts folder, or remote repository, or Jar. Basically we could using git submodule way to structure the contracts.
+
+However, sometimes we hope to limit the user only able to view related contracts instead of all of them. While at the same time, we also need a central view of all contracts. So, store the contract into said mongo DB may easier.
+
+As a result, we could achieve it in this way:
+1. All contracts stored in mongo DB with a service provided CRUD of contract
+2. Client make use of below plugin, HTTP GET above mongo service to collect associated contracts and generated into files
+3. Using spring verifier to continue generate contract Test and Stub.jar
+
+
+
+
 ## common-info
 It contains a contract object which included fields:
 
@@ -18,8 +32,8 @@ We expect the REST response json should be a List of object which included above
 ## stream-contract-maven-plugin
 
 ### Goal:
-* cleanContract
-* streamConvert
+* cleanContract - This is to cleanup the targetDirectory as specified
+* streamConvert - This is to trigger HTTP GET base on RestEndPoint config and extract into files
 
 ### How to config in client side?
 In pom.xml
