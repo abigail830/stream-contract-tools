@@ -7,9 +7,19 @@ public class Contract {
      */
     String fileName;
 
+    String filePath;
+
     String fileContent;
 
     String fileExtension;
+
+    public String getFilePath() {
+        return filePath;
+    }
+
+    public void setFilePath(String filePath) {
+        this.filePath = filePath;
+    }
 
     public String getFileName() {
         return fileName;
@@ -40,6 +50,7 @@ public class Contract {
     public String toString() {
         return "Contract{" +
                 "fileName='" + fileName + '\'' +
+                ", filePath='" + filePath + '\'' +
                 ", fileContent='" + fileContent + '\'' +
                 ", fileExtension='" + fileExtension + '\'' +
                 '}';

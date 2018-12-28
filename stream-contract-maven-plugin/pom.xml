@@ -19,8 +19,8 @@
     <prerequisites><maven>3.2.1</maven></prerequisites>
 
     <properties>
-        <jersey-client.version>2.27</jersey-client.version>
-        <jersey-json.version>1.19.4</jersey-json.version>
+        <jersey-client.version>2.22.1</jersey-client.version>
+        <jersey-json.version>1.19</jersey-json.version>
     </properties>
 
     <dependencies>
@@ -34,6 +34,11 @@
             <groupId>org.apache.maven</groupId>
             <artifactId>maven-core</artifactId>
             <version>${maven.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
         </dependency>
 
         <!-- dependencies to annotations -->
@@ -94,6 +99,30 @@
             <artifactId>jersey-json</artifactId>
             <version>${jersey-json.version}</version>
         </dependency>
+
+        <dependency>
+            <groupId>org.glassfish.jersey.inject</groupId>
+            <artifactId>jersey-hk2</artifactId>
+            <version>2.26-b04</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.glassfish.grizzly/grizzly-http-all -->
+        <!--<dependency>-->
+            <!--<groupId>org.glassfish.grizzly</groupId>-->
+            <!--<artifactId>grizzly-http-all</artifactId>-->
+            <!--<version>2.4.0</version>-->
+        <!--</dependency>-->
+
+
+
+        <!-- https://mvnrepository.com/artifact/junit/junit -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.12</version>
+            <scope>test</scope>
+        </dependency>
+
     </dependencies>
 
     <build>
