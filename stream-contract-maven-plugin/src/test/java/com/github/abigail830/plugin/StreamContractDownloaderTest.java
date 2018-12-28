@@ -17,7 +17,7 @@ public class StreamContractDownloaderTest {
     public void setUp() throws Exception {
 
         RestEndPoint restEndPoint = new RestEndPoint();
-        restEndPoint.setBaseUrl(URI.create("http://127.0.0.1:8080/contracts"));
+        restEndPoint.setBaseUrl(URI.create("http://127.0.0.1:8080/contracts/ContractProvider"));
         RestEndPoint[] restEndPoints = new RestEndPoint[1];
         restEndPoints[0] = restEndPoint;
         downloader = new StreamContractDownloader(new File("target/contract"), restEndPoints);

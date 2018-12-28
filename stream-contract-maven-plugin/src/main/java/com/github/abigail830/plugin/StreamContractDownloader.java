@@ -96,12 +96,25 @@ public class StreamContractDownloader {
         try{
             for(Contract contract : contractList) {
 
+                File contractFile = targetRootDirectory;
+
                 if(contract.getFilePath()!=null){
-                    targetRootDirectory= new File(targetRootDirectory, contract.getFilePath());
+                    contractFile= new File(targetRootDirectory, contract.getFilePath());
                 }
 
-                File contractFile = createContractFile(
-                        targetRootDirectory + "/" + contract.getFileName()+"."+contract.getFileExtension());
+                if(contract.getFileName()!=null){
+                    if(contract.getFileExtension()!=null) {
+                        contractFile = createContractFile(contractFile +
+                                "/" + contract.getFileName() + "." + contract.getFileExtension());
+                    }else{
+                        contractFile = createContractFile(contractFile +
+                                "/" + contract.getFileName());
+                    }
+                }else{
+                    log.warn("No file would be generated given no fileName provided in RestEndPoint.");
+                    return;
+                }
+
                 FileUtils.writeStringToFile(contractFile, contract.getFileContent(), "UTF-8", false);
                 log.info("Target file created: {}", contractFile.getAbsolutePath());
             }
