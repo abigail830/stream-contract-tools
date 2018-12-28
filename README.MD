@@ -42,7 +42,7 @@ In pom.xml
 			</plugin>
 		</plugins>
 		
-		<!-- To attach the goal with maven phase ->
+		<!-- To attach the goal with maven phase -->
 		<pluginManagement>
 			<plugins>
 				<plugin>
