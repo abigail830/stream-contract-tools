@@ -3,6 +3,7 @@ package com.github.abigail830.plugin;
 
 import com.github.abigail830.Contract;
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 import org.apache.commons.io.FileUtils;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -40,6 +41,7 @@ public class StreamContractDownloader {
 
         log.info("Going to start download contract to file...");
         downloadContractToFile(this.targetContractDirectory);
+        log.info("streamConvert goal complete.");
 
     }
 
@@ -59,13 +61,19 @@ public class StreamContractDownloader {
             if("GET".equals(restEndPoint.getRestMethod())){
                 Response response = invocationBuilder.get();
                 if(response.getStatusInfo().getFamily()== Response.Status.Family.SUCCESSFUL){
-                    String result = response.readEntity(String.class);
-                    log.debug(result);
-                    Gson gson = new Gson();
-                    ArrayList<Contract> contractArrayList = gson.fromJson(result,
-                            new TypeToken<List<Contract>>(){}.getType());
+                    try{
+                        String result = response.readEntity(String.class);
+                        log.debug(result);
+                        Gson gson = new Gson();
+                        ArrayList<Contract> contractArrayList = gson.fromJson(result,
+                                new TypeToken<List<Contract>>(){}.getType());
 
-                    writeContractListJsonToFiles(contractArrayList, targetRootDirectory);
+                        writeContractListJsonToFiles(contractArrayList, targetRootDirectory);
+
+                    }catch(JsonSyntaxException e){
+                        log.warn("Fail to parse response content, please double check the response format.");
+                    }
+
                 }else{
                     log.warn("Fail to access RestEndPoint [{}] with sattus {}, no file would be generated",
                             restEndPoint.getBaseUrl(), response.getStatus() );
