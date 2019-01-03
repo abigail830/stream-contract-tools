@@ -27,7 +27,7 @@ It contains a contract object which included fields:
 * String fileContent
 * String fileExtension
 
-We expect the REST response json should be a List of object which included above fields.
+We expect the REST response json should be a List of JSON object which included above fields.
 
 ## stream-contract-maven-plugin
 

@@ -104,32 +104,43 @@ public class StreamContractDownloader {
         try{
             for(Contract contract : contractList) {
 
-                File contractFile = targetRootDirectory;
+                File contractDir = targetRootDirectory;
 
                 if(contract.getFilePath()!=null){
-                    contractFile= new File(targetRootDirectory, contract.getFilePath());
+                    contractDir= new File(targetRootDirectory, contract.getFilePath());
                 }
 
-                if(contract.getFileName()!=null){
-                    if(contract.getFileExtension()!=null) {
-                        contractFile = createContractFile(contractFile +
-                                "/" + contract.getFileName() + "." + contract.getFileExtension());
-                    }else{
-                        contractFile = createContractFile(contractFile +
-                                "/" + contract.getFileName());
-                    }
+                String f_name = constructureFileName(contractDir, contract.getFileName(),
+                        contract.getFileExtension());
+                if(f_name!=null){
+                    contractDir = createContractFile(f_name);
+                    FileUtils.writeStringToFile(contractDir, contract.getFileContent(),
+                            "UTF-8", false);
+                    log.info("Target file created: {}", contractDir.getAbsolutePath());
                 }else{
                     log.warn("No file would be generated given no fileName provided in RestEndPoint.");
                     return;
                 }
-
-                FileUtils.writeStringToFile(contractFile, contract.getFileContent(), "UTF-8", false);
-                log.info("Target file created: {}", contractFile.getAbsolutePath());
             }
         } catch (IOException e) {
             log.warn("Fail to write contract to target Directory.");
             throw new MojoFailureException(e.getMessage(), e.getCause());
         }
+    }
+
+    private String constructureFileName(File contractDir, String fileName, String fileExtension){
+
+        if(fileName!=null){
+            if(fileExtension!=null) {
+                return contractDir + "/" + fileName + "." + fileExtension;
+            }else{
+                return contractDir + "/" + fileName;
+            }
+        }else{
+            log.warn("No file would be generated given no fileName provided in RestEndPoint.");
+            return null;
+        }
+
     }
 
     private File createContractFile(String fileName) throws IOException {
