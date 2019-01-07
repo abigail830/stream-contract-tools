@@ -1,4 +1,4 @@
-package com.github.abigail830.plugin;
+package com.github.abigail830;
 
 
 import java.net.URI;

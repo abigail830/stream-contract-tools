@@ -1,6 +1,7 @@
 package com.github.abigail830.plugin;
 
-import com.google.common.net.MediaType;
+import com.github.abigail830.RestEndPoint;
+import com.github.abigail830.StreamContractDownloader;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -10,7 +11,6 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
 
 import java.io.File;
-import java.util.Map;
 
 @Mojo(name = "streamConvert", requiresProject = false, defaultPhase = LifecyclePhase.COMPILE)
 public class StreamConvertMojo extends AbstractMojo {
