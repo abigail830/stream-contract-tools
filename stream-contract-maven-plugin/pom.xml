@@ -13,7 +13,7 @@
 
     <artifactId>stream-contract-maven-plugin</artifactId>
     <packaging>maven-plugin</packaging>
-    <name>Stream Contract Maven Plugin</name>
+    <name>Stream common.Contract Maven Plugin</name>
     <inceptionYear>2018</inceptionYear>
 
     <prerequisites><maven>3.2.1</maven></prerequisites>

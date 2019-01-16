@@ -33,7 +33,7 @@ We expect the REST response json should be a List of JSON object which included 
 
 ### Goal:
 * cleanContract - This is to cleanup the targetDirectory as specified
-* streamConvert - This is to trigger HTTP GET base on RestEndPoint config and extract into files
+* streamConvert - This is to trigger HTTP GET base on common.RestEndPoint config and extract into files
 
 ### How to config in client side?
 In pom.xml
@@ -48,9 +48,9 @@ In pom.xml
 				<configuration>
 					<targetContractDirectory>contracts</targetContractDirectory>
 					<restEndPoints>
-						<RestEndPoint>
+						<common.RestEndPoint>
 							<baseUrl>http://127.0.0.1:8080/contracts/ContractProvider</baseUrl>
-						</RestEndPoint>
+						</common.RestEndPoint>
 					</restEndPoints>
 				</configuration>
 			</plugin>

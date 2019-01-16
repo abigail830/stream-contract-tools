@@ -11,13 +11,13 @@
 
     <modelVersion>4.0.0</modelVersion>
     <artifactId>common-info</artifactId>
-    <name>Stream Contract common info</name>
+    <name>Stream common.Contract common info</name>
     <description>Common info using by stream-contract plugins</description>
 
     <packaging>jar</packaging>
 
     <properties>
-        <jersey-client.version>2.22.1</jersey-client.version>
+        <jersey-client.version>2.25.1</jersey-client.version>
         <jersey-json.version>1.19</jersey-json.version>
     </properties>
 
